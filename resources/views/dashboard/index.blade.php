@@ -13,10 +13,15 @@
         <ul class="users-list clearfix">
             @foreach($users as $user)
                 <li>
-                    <img src="https://i.ytimg.com/vi/opKg3fyqWt4/hqdefault.jpg" alt="User Image">
+                    @if(!empty($user['image']))
+                        <img src="http://www.eis-selber-machen.com/webservices/image/{{$user['image']}}"
+                             alt="User Image">
+                    @else
+                        <img src="http://app.eis-selber-machen.com/img/avatar.jpg" alt="User Image">
+                    @endif
                     <a class="users-list-name"
                        href="{{URL::to('admin/users/' . $user['id'])}}">{{$user['first_name']}} {{$user['last_name']}}</a>
-                    <span class="users-list-date">{{$user['date_time']}}</span>
+                    <span class="users-list-date">{{\Carbon\Carbon::createFromFormat('d.m.y. H:i:s', $user['date_time'])->format('d.m.y.')}}</span>
                 </li>
             @endforeach
         </ul>
@@ -37,7 +42,11 @@
         <!-- timeline time label -->
         @foreach($mergedArray as $posts)
             <li class="time-label"><span class="bg-red">
-                          {{$posts[0]['comment_date']}}
+                    @if(array_key_exists('comment_date', $posts[0]))
+                        {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$posts[0]['comment_date'])->format('d.m.Y.')}}
+                    @elseif(array_key_exists('date_time', $posts[0]))
+                        {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$posts[0]['date_time'])->format('d.m.Y.')}}
+                    @endif
             </span></li>
 
             @foreach($posts as $singleComment)
@@ -48,7 +57,7 @@
 
                 <div class="timeline-item">
                         <span class="time"><i
-                                    class="fa fa-clock-o"></i> {{\Carbon\Carbon::createFromFormat('d.m.Y.',$singleComment['comment_date'])->diffForHumans()}}</span>
+                                    class="fa fa-clock-o"></i> {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$singleComment['comment_date'])->addHours(-2)->addSeconds(-30)->diffForHumans()}}</span>
 
                     <h3 class="timeline-header">
                             <span style="color: #3c8dbc; font-weight: bold">
@@ -73,28 +82,28 @@
                     </div>
                 </div>
             </li>
-            @else
+            @endif
+
+            @if(array_key_exists('date_time', $singleComment) && !empty($singleComment['user']))
                     <!-- FAVORITES -->
-            @if(!empty($singleComment['user']))
-                <li>
-                    <i class="fa fa-thumbs-up bg-green"></i>
+            <li>
+                <i class="fa fa-thumbs-up bg-green"></i>
 
-                    <div class="timeline-item">
+                <div class="timeline-item">
                         <span class="time"><i
-                                    class="fa fa-clock-o"></i> {{\Carbon\Carbon::createFromFormat('d.m.Y.',$singleComment['date_time'])->diffForHumans()}}</span>
+                                    class="fa fa-clock-o"></i> {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$singleComment['date_time'])->addHours(-2)->addSeconds(-30)->diffForHumans()}}</span>
 
-                        <h3 class="timeline-header">
+                    <h3 class="timeline-header">
                             <span style="color: #3c8dbc; font-weight: bold">
                                 {{$singleComment['user']['first_name']}} {{$singleComment['user']['last_name']}}
                             </span>
-                            liked a recipe
+                        liked a recipe
                             <span style="color: #3c8dbc; font-weight: bold">
                                 {{$singleComment['recipe']['post_title']}}
                             </span>
-                        </h3>
-                    </div>
-                </li>
-            @endif
+                    </h3>
+                </div>
+            </li>
             @endif
         @endforeach
 

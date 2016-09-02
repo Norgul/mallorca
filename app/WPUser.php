@@ -33,7 +33,7 @@ class WPUser extends Model
 
     public function getDateTimeAttribute($date)
     {
-        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d.m.y.');
+        return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d.m.y. H:i:s');
     }
 
 }

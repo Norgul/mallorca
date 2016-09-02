@@ -31,10 +31,14 @@
                         @foreach($wpusers as $wpuser)
                             <tr>
                                 <td>
-                                    <img src="https://pbs.twimg.com/profile_images/562466745340817408/_nIu8KHX.jpeg"
-                                         alt="Generic placeholder thumbnail"
-                                         class="img-rounded"
-                                         width="40px">
+                                    @if(!empty($wpuser->image))
+                                        <img src="http://www.eis-selber-machen.com/webservices/image/{{$wpuser->image}}"
+                                             alt="User Image" class="img-rounded"
+                                             width="40px">
+                                    @else
+                                        <img src="http://app.eis-selber-machen.com/img/avatar.jpg" alt="User Image" class="img-rounded"
+                                             width="40px">
+                                    @endif
                                 </td>
                                 <td>
                                     <a href="{{URL::to('admin/users/' . $wpuser->id)}}">
